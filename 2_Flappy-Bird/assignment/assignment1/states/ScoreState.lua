@@ -33,5 +33,18 @@ function ScoreState:render()
     love.graphics.setFont(mediumFont)
     love.graphics.printf('Score: ' .. tostring(self.score), 0, 100, VIRTUAL_WIDTH, 'center')
 
+    -- Draw medal based on score
+    scaleFactor = 0.3
+    if self.score < 5 then
+        bronze = love.graphics.newImage("bronze.png")
+        love.graphics.draw(bronze, VIRTUAL_WIDTH/2 - (bronze:getWidth()*scaleFactor)/2, 135 - (bronze:getHeight()*scaleFactor)/2, 0, scaleFactor)
+    elseif self.score >= 5 and self.score < 10 then
+        silver = love.graphics.newImage("silver.png")
+        love.graphics.draw(silver, VIRTUAL_WIDTH/2 - (silver:getWidth()*scaleFactor)/2, 135 - (silver:getHeight()*scaleFactor)/2, 0, scaleFactor)
+    elseif self.score >= 10 then
+        gold = love.graphics.newImage("gold.png")
+        love.graphics.draw(gold, VIRTUAL_WIDTH/2 - (gold:getWidth()*scaleFactor)/2, 135 - (gold:getHeight()*scaleFactor)/2, 0, scaleFactor)
+    end
+
     love.graphics.printf('Press Enter to Play Again!', 0, 160, VIRTUAL_WIDTH, 'center')
 end
