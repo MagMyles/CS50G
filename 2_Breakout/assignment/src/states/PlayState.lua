@@ -33,7 +33,12 @@ function PlayState:enter(params)
 
     -- give ball random starting velocity
     self.ball.dx = math.random(-200, 200)
-    self.ball.dy = math.random(-50, -60)
+    self.ball.dy = math.random(-70, -85)
+
+    self.multiBallPowerupHits = math.random(3, self.level + 4)
+    self.powerup = nil
+    self.livePowerup = true
+
 end
 
 function PlayState:update(dt)
@@ -53,6 +58,12 @@ function PlayState:update(dt)
     -- update positions based on velocity
     self.paddle:update(dt)
     self.ball:update(dt)
+    if self.powerup ~= nil then
+        self.powerup:update(dt)
+        if self.powerup.y >= VIRTUAL_HEIGHT then
+            self.powerup = nil
+        end
+    end
 
     if self.ball:collides(self.paddle) then
         -- raise ball above paddle in case it goes below it, then reverse dy
@@ -86,6 +97,17 @@ function PlayState:update(dt)
 
             -- trigger the brick's hit function, which removes it from play
             brick:hit()
+            
+            -- See if a powerup drops
+            if self.livePowerup then
+                self.multiBallPowerupHits = self.multiBallPowerupHits - 1
+                if self.multiBallPowerupHits == 0 then
+                    self.powerup = Powerup(9)
+                    self.powerup.x = brick.x + brick.width / 2 - 8  -- Powerup width to center it
+                    self.powerup.y = brick.y + brick.height
+                    self.livePowerup = false
+                end
+            end
 
             -- if we have enough points, recover a point of health
             if self.score > self.recoverPoints then
@@ -164,6 +186,11 @@ function PlayState:update(dt)
         end
     end
 
+    if self.powerup ~= nil and self.powerup.alive and self.powerup:pickedup(self.paddle) then
+        self.powerup.alive = false
+    end
+
+
     -- if ball goes below bounds, revert to serve state and decrease health
     if self.ball.y >= VIRTUAL_HEIGHT then
         self.health = self.health - 1
@@ -210,6 +237,9 @@ function PlayState:render()
 
     self.paddle:render()
     self.ball:render()
+    if self.powerup ~= nil then
+        self.powerup:render()
+    end
 
     renderScore(self.score)
     renderHealth(self.health)
