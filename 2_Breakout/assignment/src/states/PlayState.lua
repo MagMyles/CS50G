@@ -191,24 +191,27 @@ function PlayState:update(dt)
 
         -- if ball goes below bounds, revert to serve state and decrease health
         if ball.y >= VIRTUAL_HEIGHT then
-            self.health = self.health - 1
-            gSounds['hurt']:play()
+            table.remove(self.balls)
+            if #self.balls = 0 then 
+                self.health = self.health - 1
+                gSounds['hurt']:play()
 
-            if self.health == 0 then
-                gStateMachine:change('game-over', {
-                    score = self.score,
-                    highScores = self.highScores
-                })
-            else
-                gStateMachine:change('serve', {
-                    paddle = self.paddle,
-                    bricks = self.bricks,
-                    health = self.health,
-                    score = self.score,
-                    highScores = self.highScores,
-                    level = self.level,
-                    recoverPoints = self.recoverPoints
-                })
+                if self.health == 0 then
+                    gStateMachine:change('game-over', {
+                        score = self.score,
+                        highScores = self.highScores
+                    })
+                else
+                    gStateMachine:change('serve', {
+                        paddle = self.paddle,
+                        bricks = self.bricks,
+                        health = self.health,
+                        score = self.score,
+                        highScores = self.highScores,
+                        level = self.level,
+                        recoverPoints = self.recoverPoints
+                    })
+                end
             end
         end
     end
