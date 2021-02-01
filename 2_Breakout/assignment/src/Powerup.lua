@@ -12,9 +12,7 @@ function Powerup:init(type)
 
     self.width = 16
     self.height = 16
-
-    self.alive = true
-
+    
 end
 
 function Powerup:update(dt)
@@ -22,9 +20,7 @@ function Powerup:update(dt)
 end
 
 function Powerup:render()
-    if self.alive then
-        love.graphics.draw(gTextures['main'], gFrames['powerups'][self.type], self.x, self.y)
-    end
+    love.graphics.draw(gTextures['main'], gFrames['powerups'][self.type], self.x, self.y)
 end
 
 function Powerup:pickedup(paddle)
