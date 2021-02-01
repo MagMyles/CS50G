@@ -64,6 +64,7 @@ function PlayState:update(dt)
         end
     end
 
+    local toRemove = {}
     for k, ball in pairs(self.balls) do
         ball:update(dt)
 
@@ -191,29 +192,34 @@ function PlayState:update(dt)
 
         -- if ball goes below bounds, revert to serve state and decrease health
         if ball.y >= VIRTUAL_HEIGHT then
-            table.remove(self.balls)
-            if #self.balls = 0 then 
-                self.health = self.health - 1
-                gSounds['hurt']:play()
+            table.insert(toRemove, k)
+        end
+        
+        if #toRemove == #self.balls then
+            self.health = self.health - 1
+            gSounds['hurt']:play()
 
-                if self.health == 0 then
-                    gStateMachine:change('game-over', {
-                        score = self.score,
-                        highScores = self.highScores
-                    })
-                else
-                    gStateMachine:change('serve', {
-                        paddle = self.paddle,
-                        bricks = self.bricks,
-                        health = self.health,
-                        score = self.score,
-                        highScores = self.highScores,
-                        level = self.level,
-                        recoverPoints = self.recoverPoints
-                    })
-                end
+            if self.health == 0 then
+                gStateMachine:change('game-over', {
+                    score = self.score,
+                    highScores = self.highScores
+                })
+            else
+                gStateMachine:change('serve', {
+                    paddle = self.paddle,
+                    bricks = self.bricks,
+                    health = self.health,
+                    score = self.score,
+                    highScores = self.highScores,
+                    level = self.level,
+                    recoverPoints = self.recoverPoints
+                })
             end
         end
+    end
+
+    for k, deadBall in pairs(toRemove) do
+        table.remove(self.balls, deadBall)
     end
 
     if self.powerup ~= nil and self.powerup:pickedup(self.paddle) then
@@ -222,8 +228,8 @@ function PlayState:update(dt)
             table.insert(self.balls, Ball(math.random(7)))
             self.balls[#self.balls].x = self.balls[1].x
             self.balls[#self.balls].y = self.balls[1].y
-            self.balls[#self.balls].dx = self.balls[1].dx + math.random(-10, 10)
-            self.balls[#self.balls].dy = self.balls[1].dy
+            self.balls[#self.balls].dx = self.balls[1].dx + math.random(-30, 30)
+            self.balls[#self.balls].dy = self.balls[1].dy + math.random(-10, 10)
         end
     end
 
