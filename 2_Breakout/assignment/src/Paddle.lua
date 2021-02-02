@@ -19,7 +19,7 @@ Paddle = Class{}
     Our Paddle will initialize at the same spot every time, in the middle
     of the world horizontally, toward the bottom.
 ]]
-function Paddle:init(skin)
+function Paddle:init(skin, width)
     -- x is placed in the middle
     self.x = VIRTUAL_WIDTH / 2 - 32
 
@@ -30,7 +30,7 @@ function Paddle:init(skin)
     self.dx = 0
 
     -- starting dimensions
-    self.width = 64
+    self.width = width or 64
     self.height = 16
 
     -- the skin only has the effect of changing our color, used to offset us
